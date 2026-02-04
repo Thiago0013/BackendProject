@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.LoginDTO;
 import com.example.backend.dto.UsersDTO;
 import com.example.backend.models.Users;
 import com.example.backend.services.AuthService;
@@ -24,5 +25,11 @@ public class AuthController {
     public ResponseEntity<Users> register(@RequestBody UsersDTO dto){
         Users user = authService.create(dto);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginDTO dto){
+        var token = authService.login(dto);
+        return ResponseEntity.ok(token);
     }
 }
