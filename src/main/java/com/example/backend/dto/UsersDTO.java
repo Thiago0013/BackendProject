@@ -1,4 +1,9 @@
 package com.example.backend.dto;
 
-public class UsersDTO {
+public record UsersDTO(
+        String name,
+        String email,
+        String password,
+        String phone
+) {
 }
