@@ -3,6 +3,7 @@ package com.example.backend.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,11 +18,15 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Integer maxProposta;
-    private Integer totalPropostas;
-    private Double nota;
+    private String companyName;
+    private String cnpjNif;
+    private String address;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private Users user;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Projects> projects;
 
 }
