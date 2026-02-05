@@ -1,0 +1,77 @@
+[33mcommit 0fd6cfdf9b4660336b874607e9269896e089dde3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Thu Feb 5 12:08:47 2026 -0300
+
+    feat(repository): create JPA repositories for all entities
+
+[33mcommit 962599e07733b6562531597f8d82e15ee4e10193[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Thu Feb 5 11:58:51 2026 -0300
+
+    ajustando tabelas e criando tabela Messages
+
+[33mcommit fd3a133f52cc83589902b76d9b3f6af4fc51c136[m
+Author: Ian Thiago <ianthigo13@gmail.com>
+Date:   Wed Feb 4 21:09:19 2026 -0300
+
+    Criando novas tabelas
+
+[33mcommit 73d3be5b2f2f4a84d2412aa18d3ee0d1e6d02c48[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 15:22:54 2026 -0300
+
+    chore: adicionando mais informacoes
+
+[33mcommit 395df0a85b4615f53082e2214fb91c672883f224[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 15:21:39 2026 -0300
+
+    chore: remover binários do target e atualizar gitignore
+
+[33mcommit 635bdc2b7a73efbf4363d3bda480a6e000fd2796[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 15:17:09 2026 -0300
+
+    adicionando docker no projeto
+
+[33mcommit e32a2af828cb5a4b655e3d8c1ba553f2e77b6450[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 15:16:51 2026 -0300
+
+    adicionando docker no projeto
+
+[33mcommit 3fe5590ed34b8797e21b80045e1b09b618e721c7[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 15:16:36 2026 -0300
+
+    adicionando docker no projeto
+
+[33mcommit 9ec9d12477a2a5b027b0bee0c3aa4e008d51a0e5[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Wed Feb 4 13:28:09 2026 -0300
+
+    Adicionando sistema de login
+
+[33mcommit f6f62c5d0fbb3105192e43dcb815821ac15872bf[m
+Author: Ian Thiago <ianthigo13@gmail.com>
+Date:   Tue Feb 3 21:40:27 2026 -0300
+
+    Criando a rota register
+
+[33mcommit 491e6fb06a046f8bfd68ca9c854c7f9a0b393aa6[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Tue Feb 3 15:49:45 2026 -0300
+
+    Adicionando configuração de segurança e token JWT
+
+[33mcommit 9b292c4840668c20d2752891406c1c26d8e40a5f[m
+Author: Thiago0013 <ianthigo13@gmail.com>
+Date:   Tue Feb 3 15:49:25 2026 -0300
+
+    Adicionando configuração de segurança e token JWT
+
+[33mcommit 8b2cf86610c9dfa3cee3830fcf3dadbd231a426b[m
+Author: Ian Thiago <130786947+Thiago0013@users.noreply.github.com>
+Date:   Thu Jan 29 19:37:49 2026 -0300
+
+    Subindo projeto
