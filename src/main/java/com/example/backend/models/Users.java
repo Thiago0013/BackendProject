@@ -33,33 +33,12 @@ public class Users implements UserDetails{
 
     private String phone;
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cliente cliente;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Providers provider;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
