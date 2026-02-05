@@ -28,4 +28,45 @@ public class Providers {
     @OneToOne
     @JoinColumn(name = "user_id")
     private Users user;
+
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getPortifolioURL() {
+        return portifolioURL;
+    }
+
+    public void setPortifolioURL(String portifolioURL) {
+        this.portifolioURL = portifolioURL;
+    }
+
+    public Double getHourlyRate() {
+        return hourlyRate;
+    }
+
+    public void setHourlyRate(Double hourlyRate) {
+        this.hourlyRate = hourlyRate;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
 }
