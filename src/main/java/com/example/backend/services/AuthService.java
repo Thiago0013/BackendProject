@@ -39,6 +39,9 @@ public class AuthService implements UserDetailsService {
     }
 
     public Users create(UsersDTO dto){
+        if(userRepo.existsByEmail(dto.email())){
+            throw new RuntimeException("ERRO: Este email já existe!");
+        }
         Users newUser = new Users();
         newUser.setNome(dto.name());
         newUser.setEmail(dto.email());
