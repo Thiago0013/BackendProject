@@ -7,9 +7,11 @@ import com.example.backend.models.Users;
 import com.example.backend.services.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/project")
@@ -27,8 +29,14 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectResponseDTO> create(@RequestBody ProjectDTO dto, Authentication authentication){
+    public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody ProjectDTO dto, Authentication authentication){
         Users user = (Users) authentication.getPrincipal();
         return ResponseEntity.ok(projectService.create(dto, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable UUID id, @AuthenticationPrincipal Users user){
+        projectService.delete(id, user);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProjectService {
@@ -27,6 +28,7 @@ public class ProjectService {
     public List<ProjectWithClientDTO> getAll(){
         return projectRepo.findAll().stream()
                 .map(p -> new ProjectWithClientDTO(
+                        p.getId(),
                         p.getTitle(),
                         p.getDescription(),
                         p.getBudget(),
@@ -57,6 +59,7 @@ public class ProjectService {
         projectRepo.save(newProjects);
 
         return new ProjectResponseDTO(
+                newProjects.getId(),
                 newProjects.getTitle(),
                 newProjects.getDescription(),
                 newProjects.getBudget(),
@@ -64,6 +67,16 @@ public class ProjectService {
                 newProjects.getDeadline(),
                 user.getName()
         );
+    }
+
+    public void delete(UUID id, Users user){
+        Projects project = projectRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado!"));
+
+        if(!project.getCliente().getUser().getId().equals(user.getId())){
+            throw new RuntimeException("ERRO: Tarefa não pertece a esté usuario.");
+        }
+
+        projectRepo.delete(project);
     }
 
 }
