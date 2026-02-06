@@ -69,6 +69,42 @@ public class ProjectService {
         );
     }
 
+    public ProjectResponseDTO update(UUID id, ProjectDTO dto, Users user){
+        Projects project = projectRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado!"));
+
+        if(!project.getCliente().getUser().getId().equals(user.getId())){
+            throw new RuntimeException("ERRO: Tarefa não pertence a esté usuario!");
+        }
+
+        if(dto.title() != null){
+            project.setTitle(dto.title());
+        }
+        if (dto.description() != null){
+            project.setDescription(dto.description());
+        }
+        if(dto.status() != null){
+            project.setStatus(dto.status());
+        }
+        if(dto.budget() != null){
+            project.setBudget(dto.budget());
+        }
+        if(dto.deadline() != null){
+            project.setDeadline(dto.deadline());
+        }
+
+        projectRepo.save(project);
+
+        return new ProjectResponseDTO(
+                project.getId(),
+                project.getTitle(),
+                project.getDescription(),
+                project.getBudget(),
+                project.getStatus(),
+                project.getDeadline(),
+                project.getCliente().getUser().getName()
+        );
+    }
+
     public void delete(UUID id, Users user){
         Projects project = projectRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado!"));
 

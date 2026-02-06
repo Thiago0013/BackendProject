@@ -3,6 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.dto.ProjectResponseDTO;
 import com.example.backend.dto.ProjectWithClientDTO;
+import com.example.backend.models.Projects;
 import com.example.backend.models.Users;
 import com.example.backend.services.ProjectService;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,12 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody ProjectDTO dto, Authentication authentication){
         Users user = (Users) authentication.getPrincipal();
         return ResponseEntity.ok(projectService.create(dto, user));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable UUID id, @RequestBody ProjectDTO dto, @AuthenticationPrincipal Users user){
+        ProjectResponseDTO updatedProject = projectService.update(id, dto, user);
+        return ResponseEntity.ok(updatedProject);
     }
 
     @DeleteMapping("/{id}")
