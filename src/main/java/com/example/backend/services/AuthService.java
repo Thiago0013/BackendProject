@@ -56,7 +56,7 @@ public class AuthService implements UserDetailsService {
             throw new RuntimeException("ERRO: Este email já existe!");
         }
         Users newUser = new Users();
-        newUser.setNome(dto.name());
+        newUser.setName(dto.name());
         newUser.setEmail(dto.email());
         newUser.setPassword(passwordEncoder.encode(dto.password()));
         newUser.setPhone(dto.phone());
