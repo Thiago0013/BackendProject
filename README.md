@@ -99,6 +99,47 @@ JSON
   }
 ]
 
+Atualizar dados do cliente
+
+Atualizar dados vazios:
+
+    Rota: PUT /client
+
+Corpo da Requisição (JSON):
+Campo   Tipo   Descrição
+companyName   String   nome da empresa.
+cnpjNif   String   cnpj da empresa.
+address   String   endereço.
+JSON
+
+{
+"id": "048fa432-e199-4c4c-a0dd-522178484fc2",
+"companyName": "N Technologia",
+"cnpjNif": "11.444.777/0001-61",
+"address": "Rua dos barros",
+"user": {
+"id": "bcb599d5-677f-4cf5-828e-cd38d49b20c5",
+"name": "",
+"email": "ian.sec@hacking.com",
+"phone": "85922223333"
+}
+}
+
+Resposta(200):
+
+{
+"id": "048fa432-e199-4c4c-a0dd-522178484fc2",
+"companyName": "Vortex Technologia",
+"cnpjNif": "1231/12",
+"address": "Rua dos doidos",
+"user": {
+"id": "bcb599d5-677f-4cf5-828e-cd38d49b20c5",
+"name": "Ian Silva",
+"email": "ian@exemplo.com",
+"phone": "85922223333"
+}
+}
+
 Criar Projeto
 
 Cadastra um novo projeto na plataforma.
