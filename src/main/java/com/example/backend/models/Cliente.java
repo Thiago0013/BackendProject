@@ -22,6 +22,7 @@ public class Cliente {
     private String companyName;
     private String cnpjNif;
     private String address;
+    private String bio;
 
     @OneToOne
     @JoinColumn(name = "user_id")
