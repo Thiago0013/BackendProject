@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.example.backend.models.enums.StatusProjectType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +34,8 @@ public class Projects {
     private BigDecimal budget;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StatusProjectType status;
 
     @Column(nullable = false)
     private LocalDateTime deadline;

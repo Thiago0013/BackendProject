@@ -7,6 +7,7 @@ import com.example.backend.dto.ProjectWithClientDTO;
 import com.example.backend.models.Cliente;
 import com.example.backend.models.Projects;
 import com.example.backend.models.Users;
+import com.example.backend.models.enums.StatusProjectType;
 import com.example.backend.repositories.ClienteRepository;
 import com.example.backend.repositories.NegotiationsRepository;
 import com.example.backend.repositories.ProjectRepository;
@@ -60,7 +61,7 @@ public class ProjectService {
         Projects newProjects = new Projects();
         newProjects.setTitle(dto.title());
         newProjects.setDescription(dto.description());
-        newProjects.setStatus(dto.status());
+        newProjects.setStatus(StatusProjectType.OPEN);
         newProjects.setBudget(dto.budget());
         newProjects.setDeadline(dto.deadline());
         newProjects.setCliente(client);
@@ -91,9 +92,6 @@ public class ProjectService {
         }
         if (dto.description() != null){
             project.setDescription(dto.description());
-        }
-        if(dto.status() != null){
-            project.setStatus(dto.status());
         }
         if(dto.budget() != null){
             project.setBudget(dto.budget());
