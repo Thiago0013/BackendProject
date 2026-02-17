@@ -16,14 +16,14 @@ public class ProviderService {
     }
 
     public Providers getProvider(Users user){
-        if(!providersRepo.existsByUser(user)){
+        if(providersRepo.existsByUser(user)){
             throw new RuntimeException("ERRO: Não existe provider para este usuario.");
         }
         return providersRepo.findByUser(user);
     }
 
     public Providers editProvider(ProviderDTO dto, Users user){
-        if(!providersRepo.existsByUser(user)){
+        if(providersRepo.existsByUser(user)){
             throw new RuntimeException("ERRO: Não existe provider para este usuario.");
         }
 

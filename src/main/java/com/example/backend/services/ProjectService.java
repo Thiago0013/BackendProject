@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.dto.NegotiationResponseDTO;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.dto.ProjectResponseDTO;
 import com.example.backend.dto.ProjectWithClientDTO;
@@ -7,7 +8,9 @@ import com.example.backend.models.Cliente;
 import com.example.backend.models.Projects;
 import com.example.backend.models.Users;
 import com.example.backend.repositories.ClienteRepository;
+import com.example.backend.repositories.NegotiationsRepository;
 import com.example.backend.repositories.ProjectRepository;
+import com.example.backend.repositories.ProvidersRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,10 +22,17 @@ public class ProjectService {
 
     private final ProjectRepository projectRepo;
     private final ClienteRepository clientRepo;
+    private final ProvidersRepository providersRepo;
+    private final NegotiationsRepository negotiationsRepo;
 
-    public ProjectService(ProjectRepository projectRepo, ClienteRepository clientRepo){
+    public ProjectService(ProjectRepository projectRepo,
+                          ClienteRepository clientRepo,
+                          NegotiationsRepository negotiationsRepo,
+                          ProvidersRepository providersRepo){
         this.projectRepo = projectRepo;
         this.clientRepo = clientRepo;
+        this.negotiationsRepo = negotiationsRepo;
+        this.providersRepo = providersRepo;
     }
 
     public List<ProjectWithClientDTO> getAll(){
@@ -113,6 +123,32 @@ public class ProjectService {
         }
 
         projectRepo.delete(project);
+    }
+
+    public List<NegotiationResponseDTO> listProposalsForClient(UUID projectId, Users user) {
+        if (providersRepo.existsByUser(user)) {
+            throw new RuntimeException("ERRO: Esta área é apenas para clientes");
+        }
+
+        Projects project = projectRepo.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado."));
+
+        if (!project.getCliente().getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("ERRO: Este projeto não pertence a você");
+        }
+
+        return negotiationsRepo.findAllByProjects(project).stream()
+                .map(n -> new NegotiationResponseDTO(
+                        n.getId(),
+                        n.getProposedValue(),
+                        n.getMessage(),
+                        n.getStatus().toString(),
+                        n.getCreatedAt(),
+                        n.getProviders().getUser().getName(),
+                        n.getProviders().getUser().getEmail(),
+                        n.getProviders().getUser().getPhone()
+                ))
+                .toList();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.example.backend.models.enums.StatusType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,12 @@ public class Negotiations {
 
     @Column(nullable = false)
     private BigDecimal proposedValue;
-    private String status;
+
+    private String message;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusType status;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

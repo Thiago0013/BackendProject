@@ -1,10 +1,11 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.NegotiationResponseDTO;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.dto.ProjectResponseDTO;
 import com.example.backend.dto.ProjectWithClientDTO;
-import com.example.backend.models.Projects;
 import com.example.backend.models.Users;
+import com.example.backend.services.NegotiationsService;
 import com.example.backend.services.ProjectService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -45,5 +46,14 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable UUID id, @AuthenticationPrincipal Users user){
         projectService.delete(id, user);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{projectId}/negotiations")
+    public ResponseEntity<List<NegotiationResponseDTO>> getProjectProposals(
+            @PathVariable UUID projectId,
+            @AuthenticationPrincipal Users user
+    ) {
+        List<NegotiationResponseDTO> proposals = projectService.listProposalsForClient(projectId, user);
+        return ResponseEntity.ok(proposals);
     }
 }
