@@ -1,10 +1,13 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.ClientDTO;
+import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.models.Cliente;
 import com.example.backend.models.Users;
 import com.example.backend.repositories.ClienteRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -15,18 +18,14 @@ public class ClientService {
         this.clientRepo = clientRepo;
     }
 
-    public Cliente getClient(Users user){
-        if(!clientRepo.existsByUser(user)){
-            throw new RuntimeException("ERRO: Usuario não existe");
-        }
-        return clientRepo.findByUser(user);
+    public Cliente getClient(Users user) {
+        return Optional.ofNullable(clientRepo.findByUser(user))
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para este usuário."));
     }
 
     public Cliente editClient(ClientDTO dto, Users user){
-        if(!clientRepo.existsByUser(user)){
-            throw new RuntimeException("ERRO: Usuario não existe");
-        }
-        Cliente client = clientRepo.findByUser(user);
+        Cliente client = Optional.ofNullable(clientRepo.findByUser(user))
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para este usuário."));
         if(dto.address() != null){
             client.setAddress(dto.address());
         }

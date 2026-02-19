@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.dto.LoginDTO;
 import com.example.backend.dto.UsersDTO;
+import com.example.backend.exceptions.BusinessException;
 import com.example.backend.models.Cliente;
 import com.example.backend.models.Providers;
 import com.example.backend.models.Users;
@@ -53,7 +54,7 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public Users create(UsersDTO dto){
         if(userRepo.existsByEmail(dto.email())){
-            throw new RuntimeException("ERRO: Este email já existe!");
+            throw new BusinessException("Este e-mail já está cadastrado no sistema.");
         }
         Users newUser = new Users();
         newUser.setName(dto.name());

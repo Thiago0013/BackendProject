@@ -4,6 +4,9 @@ import com.example.backend.dto.NegotiationResponseDTO;
 import com.example.backend.dto.ProjectDTO;
 import com.example.backend.dto.ProjectResponseDTO;
 import com.example.backend.dto.ProjectWithClientDTO;
+import com.example.backend.exceptions.BusinessException;
+import com.example.backend.exceptions.ResourceNotFoundException;
+import com.example.backend.exceptions.UnauthorizedAccessException;
 import com.example.backend.models.Cliente;
 import com.example.backend.models.Negotiations;
 import com.example.backend.models.Projects;
@@ -58,7 +61,7 @@ public class ProjectService {
         Cliente client = clientRepo.findByUser(user);
 
         if(projectRepo.existsByTitle(dto.title())){
-            throw new RuntimeException("ERRO: esse projeto já existe!");
+            throw new BusinessException("Já existe um projeto cadastrado com este título.");
         }
 
         Projects newProjects = new Projects();
@@ -140,13 +143,13 @@ public class ProjectService {
         Projects projects = validateProjectOwnership(projectId, user);
 
         if(projects.getStatus() == StatusProjectType.CLOSE){
-            throw new RuntimeException("ERRO: Este projeto está fechado");
+            throw new BusinessException("Este projeto está fechado");
         }
 
         Negotiations findNegotiation = projects.getNegotiations().stream()
                 .filter(n -> n.getStatus().equals(StatusType.ACCEPTED))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("ERRO: Nenhuma negociação aceita encontrada."));
+                .orElseThrow(() -> new BusinessException("Nenhuma negociação aceita encontrada."));
 
         projects.setStatus(StatusProjectType.COMPLETED);
         findNegotiation.setStatus(StatusType.FINISHED);
@@ -160,7 +163,7 @@ public class ProjectService {
         Projects project = validateProjectOwnership(projectId, user);
 
         if(project.getStatus() == StatusProjectType.COMPLETED){
-            throw new RuntimeException("ERRO: Este projeto já está concluido.");
+            throw new BusinessException("Este projeto já está concluido.");
         }
 
         project.setStatus(StatusProjectType.CLOSE);
@@ -173,7 +176,7 @@ public class ProjectService {
         Projects project = validateProjectOwnership(projectId, user);
 
         if(project.getStatus() == StatusProjectType.COMPLETED){
-            throw new RuntimeException("ERRO: Este projeto já está concluido.");
+            throw new BusinessException("Este projeto já está concluido.");
         }
 
         project.setStatus(StatusProjectType.OPEN);
@@ -182,14 +185,14 @@ public class ProjectService {
 
     private Projects validateProjectOwnership(UUID projectId, Users user){
         if(providersRepo.existsByUser(user)){
-            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
+            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para clientes.");
         }
 
         Projects projects = projectRepo.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Projeto não encontrada. Tente com uma outro projeto ou id diferente. Id: " + projectId));
 
         if(!projects.getCliente().getUser().getId().equals(user.getId())){
-            throw new RuntimeException("ERRO: Este projeto não pertence a você");
+            throw new UnauthorizedAccessException("Acesso negado: este projeto não pertence a você.");
         }
 
         return projects;

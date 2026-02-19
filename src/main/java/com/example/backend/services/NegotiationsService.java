@@ -1,6 +1,9 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.NegotiationsDTO;
+import com.example.backend.exceptions.BusinessException;
+import com.example.backend.exceptions.ResourceNotFoundException;
+import com.example.backend.exceptions.UnauthorizedAccessException;
 import com.example.backend.models.Negotiations;
 import com.example.backend.models.Projects;
 import com.example.backend.models.Providers;
@@ -13,6 +16,7 @@ import com.example.backend.repositories.ProvidersRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,18 +37,21 @@ public class NegotiationsService {
     @Transactional
     public void saveNegotiations(UUID projectId, NegotiationsDTO dto, Users user){
         if(!providerRepo.existsByUser(user)){
-            throw new RuntimeException("ERRO: Esta área é apenas para providers");
+            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para prestadores de serviço (providers).");
         }
-        Providers provider = providerRepo.findByUser(user);
 
-        Projects project = projectRepo.findById(projectId).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado."));
+        Providers provider = Optional.ofNullable(providerRepo.findByUser(user))
+                .orElseThrow(() -> new ResourceNotFoundException("Provider não encontrado para este usuário."));
+
+        Projects project = projectRepo.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Projeto não encontrado com o ID: " + projectId));
+
         if(project.getCliente().getUser().getId().equals(user.getId())){
-            throw new RuntimeException("ERRO: Você não pode enviar propostas para si mesmo");
+            throw new BusinessException("Você não pode enviar propostas para o seu próprio projeto.");
         }
 
         boolean alreadyHasProposal = negotiationsRepo.existsByProjectsAndProviders(project, provider);
         if(alreadyHasProposal){
-            throw new RuntimeException("ERRO: Você já enviou propostas para esse projeto.");
+            throw new BusinessException("Você já enviou uma proposta para este projeto. Aguarde o retorno do cliente.");
         }
 
         Negotiations negotiations = new Negotiations();
@@ -59,15 +66,13 @@ public class NegotiationsService {
 
     @Transactional
     public void accept(UUID id, Users user) {
-        if (providerRepo.existsByUser(user)) {
-            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
-        }
+        validateIsClient(user);
 
         Negotiations negotiation = negotiationsRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("ERRO: Negociação não encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Negociação não encontrada. Tente com uma outra negociação ou id diferente. Id: " + id));
 
         if (!negotiation.getProjects().getCliente().getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("ERRO: Este projeto não pertence a este usuário.");
+            throw new UnauthorizedAccessException("Acesso negado: esta negociação não pertece a este usuario.");
         }
 
         negotiation.setStatus(StatusType.ACCEPTED);
@@ -81,18 +86,23 @@ public class NegotiationsService {
 
     @Transactional
     public void denied(UUID id, Users user){
-        if(providerRepo.existsByUser(user)){
-            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
-        }
+        validateIsClient(user);
 
-        Negotiations negotiations = negotiationsRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Negociação não encontrado."));
+        Negotiations negotiations = negotiationsRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Negociação não encontrada. Tente com uma outra negociação ou id diferente. Id: " + id));
 
 
         if(!negotiations.getProjects().getCliente().getUser().getId().equals(user.getId())){
-            throw new RuntimeException("ERRO: Projeto não pertece a este usuario.");
+            throw new UnauthorizedAccessException("Acesso negado: esta negociação não pertece a este usuario.");
         }
 
         negotiations.setStatus(StatusType.REJECTED);
         negotiationsRepo.save(negotiations);
+    }
+
+
+    public void validateIsClient(Users user){
+        if(providerRepo.existsByUser(user)){
+            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para clientes.");
+        }
     }
 }

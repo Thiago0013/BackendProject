@@ -28,7 +28,7 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token", exception);
+            throw new RuntimeException("Falha interna ao processar autenticação.", exception);
         }
     }
 
