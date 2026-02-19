@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +34,7 @@ public class Projects {
     @Column(nullable = false)
     private BigDecimal budget;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private StatusProjectType status;
 
@@ -46,4 +47,7 @@ public class Projects {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Cliente cliente;
+
+    @OneToMany(mappedBy = "projects", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Negotiations> negotiations;
 }

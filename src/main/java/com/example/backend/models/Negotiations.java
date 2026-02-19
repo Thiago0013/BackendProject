@@ -31,7 +31,7 @@ public class Negotiations {
     private String message;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private StatusType status;
 
     @CreationTimestamp

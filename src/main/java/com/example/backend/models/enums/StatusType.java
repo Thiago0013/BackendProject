@@ -5,5 +5,6 @@ import jakarta.persistence.Enumerated;
 public enum StatusType {
     PENDING,
     ACCEPTED,
-    REJECTED
+    REJECTED,
+    FINISHED
 }

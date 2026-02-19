@@ -5,13 +5,16 @@ import com.example.backend.dto.ProjectDTO;
 import com.example.backend.dto.ProjectResponseDTO;
 import com.example.backend.dto.ProjectWithClientDTO;
 import com.example.backend.models.Cliente;
+import com.example.backend.models.Negotiations;
 import com.example.backend.models.Projects;
 import com.example.backend.models.Users;
 import com.example.backend.models.enums.StatusProjectType;
+import com.example.backend.models.enums.StatusType;
 import com.example.backend.repositories.ClienteRepository;
 import com.example.backend.repositories.NegotiationsRepository;
 import com.example.backend.repositories.ProjectRepository;
 import com.example.backend.repositories.ProvidersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -80,12 +83,8 @@ public class ProjectService {
         );
     }
 
-    public ProjectResponseDTO update(UUID id, ProjectDTO dto, Users user){
-        Projects project = projectRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado!"));
-
-        if(!project.getCliente().getUser().getId().equals(user.getId())){
-            throw new RuntimeException("ERRO: Tarefa não pertence a esté usuario!");
-        }
+    public ProjectResponseDTO update(UUID projectId, ProjectDTO dto, Users user){
+        Projects project = validateProjectOwnership(projectId, user);
 
         if(dto.title() != null){
             project.setTitle(dto.title());
@@ -114,26 +113,13 @@ public class ProjectService {
     }
 
     public void delete(UUID id, Users user){
-        Projects project = projectRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado!"));
 
-        if(!project.getCliente().getUser().getId().equals(user.getId())){
-            throw new RuntimeException("ERRO: Tarefa não pertece a esté usuario.");
-        }
-
+        Projects project = validateProjectOwnership(id, user);
         projectRepo.delete(project);
     }
 
     public List<NegotiationResponseDTO> listProposalsForClient(UUID projectId, Users user) {
-        if (providersRepo.existsByUser(user)) {
-            throw new RuntimeException("ERRO: Esta área é apenas para clientes");
-        }
-
-        Projects project = projectRepo.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado."));
-
-        if (!project.getCliente().getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("ERRO: Este projeto não pertence a você");
-        }
+        Projects project = validateProjectOwnership(projectId, user);
 
         return negotiationsRepo.findAllByProjects(project).stream()
                 .map(n -> new NegotiationResponseDTO(
@@ -149,4 +135,63 @@ public class ProjectService {
                 .toList();
     }
 
+    @Transactional
+    public void completed(UUID projectId, Users user){
+        Projects projects = validateProjectOwnership(projectId, user);
+
+        if(projects.getStatus() == StatusProjectType.CLOSE){
+            throw new RuntimeException("ERRO: Este projeto está fechado");
+        }
+
+        Negotiations findNegotiation = projects.getNegotiations().stream()
+                .filter(n -> n.getStatus().equals(StatusType.ACCEPTED))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ERRO: Nenhuma negociação aceita encontrada."));
+
+        projects.setStatus(StatusProjectType.COMPLETED);
+        findNegotiation.setStatus(StatusType.FINISHED);
+
+        negotiationsRepo.save(findNegotiation);
+        projectRepo.save(projects);
+    }
+
+    public void close(UUID projectId, Users user){
+
+        Projects project = validateProjectOwnership(projectId, user);
+
+        if(project.getStatus() == StatusProjectType.COMPLETED){
+            throw new RuntimeException("ERRO: Este projeto já está concluido.");
+        }
+
+        project.setStatus(StatusProjectType.CLOSE);
+        projectRepo.save(project);
+    }
+
+    @Transactional
+    public void open(UUID projectId, Users user){
+
+        Projects project = validateProjectOwnership(projectId, user);
+
+        if(project.getStatus() == StatusProjectType.COMPLETED){
+            throw new RuntimeException("ERRO: Este projeto já está concluido.");
+        }
+
+        project.setStatus(StatusProjectType.OPEN);
+        projectRepo.save(project);
+    }
+
+    private Projects validateProjectOwnership(UUID projectId, Users user){
+        if(providersRepo.existsByUser(user)){
+            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
+        }
+
+        Projects projects = projectRepo.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("ERRO: Projeto não encontrado"));
+
+        if(!projects.getCliente().getUser().getId().equals(user.getId())){
+            throw new RuntimeException("ERRO: Este projeto não pertence a você");
+        }
+
+        return projects;
+    }
 }

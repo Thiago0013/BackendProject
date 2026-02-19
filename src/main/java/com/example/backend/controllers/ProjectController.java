@@ -36,9 +36,9 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.create(dto, user));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable UUID id, @RequestBody ProjectDTO dto, @AuthenticationPrincipal Users user){
-        ProjectResponseDTO updatedProject = projectService.update(id, dto, user);
+    @PutMapping("/{projectId}")
+    public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable UUID projectId, @RequestBody ProjectDTO dto, @AuthenticationPrincipal Users user){
+        ProjectResponseDTO updatedProject = projectService.update(projectId, dto, user);
         return ResponseEntity.ok(updatedProject);
     }
 
@@ -55,5 +55,32 @@ public class ProjectController {
     ) {
         List<NegotiationResponseDTO> proposals = projectService.listProposalsForClient(projectId, user);
         return ResponseEntity.ok(proposals);
+    }
+
+    @PatchMapping("/{projectId}/completed")
+    public ResponseEntity<Void> completedProject(
+            @PathVariable UUID projectId,
+            @AuthenticationPrincipal Users user
+    ){
+        projectService.completed(projectId, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{projectId}/close")
+    public ResponseEntity<Void> closeProject(
+            @PathVariable UUID projectId,
+            @AuthenticationPrincipal Users user
+    ){
+        projectService.close(projectId, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{projectId}/open")
+    public ResponseEntity<Void> openProject(
+            @PathVariable UUID projectId,
+            @AuthenticationPrincipal Users user
+    ){
+        projectService.open(projectId, user);
+        return ResponseEntity.noContent().build();
     }
 }
