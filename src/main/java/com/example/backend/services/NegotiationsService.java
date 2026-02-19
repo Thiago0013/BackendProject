@@ -5,6 +5,7 @@ import com.example.backend.models.Negotiations;
 import com.example.backend.models.Projects;
 import com.example.backend.models.Providers;
 import com.example.backend.models.Users;
+import com.example.backend.models.enums.StatusProjectType;
 import com.example.backend.models.enums.StatusType;
 import com.example.backend.repositories.NegotiationsRepository;
 import com.example.backend.repositories.ProjectRepository;
@@ -56,5 +57,42 @@ public class NegotiationsService {
         negotiationsRepo.save(negotiations);
     }
 
+    @Transactional
+    public void accept(UUID id, Users user) {
+        if (providerRepo.existsByUser(user)) {
+            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
+        }
 
+        Negotiations negotiation = negotiationsRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ERRO: Negociação não encontrada."));
+
+        if (!negotiation.getProjects().getCliente().getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("ERRO: Este projeto não pertence a este usuário.");
+        }
+
+        negotiation.setStatus(StatusType.ACCEPTED);
+
+        Projects project = negotiation.getProjects();
+        project.setStatus(StatusProjectType.IN_PROCESS);
+
+        negotiationsRepo.save(negotiation);
+        projectRepo.save(project);
+    }
+
+    @Transactional
+    public void denied(UUID id, Users user){
+        if(providerRepo.existsByUser(user)){
+            throw new RuntimeException("ERRO: Esta área é apenas para clientes.");
+        }
+
+        Negotiations negotiations = negotiationsRepo.findById(id).orElseThrow(() -> new RuntimeException("ERRO: Negociação não encontrado."));
+
+
+        if(!negotiations.getProjects().getCliente().getUser().getId().equals(user.getId())){
+            throw new RuntimeException("ERRO: Projeto não pertece a este usuario.");
+        }
+
+        negotiations.setStatus(StatusType.REJECTED);
+        negotiationsRepo.save(negotiations);
+    }
 }

@@ -44,7 +44,4 @@ public class Negotiations {
     @ManyToOne
     @JoinColumn(name = "providers_id")
     private Providers providers;
-
-    @OneToMany(mappedBy = "negotiations", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Messages> messages;
 }

@@ -33,6 +33,9 @@ public class ClientService {
         if(dto.cnpjNif() != null) {
             client.setCnpjNif(dto.cnpjNif());
         }
+        if(dto.bio() != null) {
+            client.setBio(dto.bio());
+        }
         if(dto.companyName() != null){
             client.setCompanyName(dto.companyName());
         }
