@@ -48,6 +48,10 @@ public class Projects {
     @JoinColumn(name = "client_id")
     private Cliente cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @OneToMany(mappedBy = "projects", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Negotiations> negotiations;
 }

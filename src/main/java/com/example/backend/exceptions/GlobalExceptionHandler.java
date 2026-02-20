@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
         CustomErrorResponse error = new CustomErrorResponse(
                 LocalDateTime.now(),
-                HttpStatus.UNAUTHORIZED.value(), // 401 Unauthorized
+                HttpStatus.UNAUTHORIZED.value(),
                 "Falha na Autenticação",
                 "Login ou senha inválidos.",
                 request.getRequestURI()
