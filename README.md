@@ -135,12 +135,6 @@ Cadastra um novo projeto na plataforma.
     Acesso apenas do cliente
 
 Corpo da Requisição (JSON):
-Campo	Tipo	Descrição
-title	String	Título do projeto.
-description	String	Detalhes do escopo.
-budget	BigDecimal	Orçamento previsto (ex: 1500.00).
-status	String	Estado atual (ex: "OPEN", "IN_PROGRESS").
-deadline	LocalDateTime	Data/Hora limite (formato ISO-8601).
 JSON
 
     {
