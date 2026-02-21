@@ -29,15 +29,15 @@ public class NegotiationsController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{id}/accept")
-    public ResponseEntity<Void> acceptProposal(@PathVariable UUID id, @AuthenticationPrincipal Users user){
-        negotiationsService.accept(id, user);
+    @PatchMapping("/{negotiationId}/accept")
+    public ResponseEntity<Void> acceptProposal(@PathVariable UUID negotiationId, @AuthenticationPrincipal Users user){
+        negotiationsService.accept(negotiationId, user);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/denied")
-    public ResponseEntity<Void> deniedProposal(@PathVariable UUID id, @AuthenticationPrincipal Users user){
-        negotiationsService.denied(id, user);
+    @PatchMapping("/{negotiationId}/denied")
+    public ResponseEntity<Void> deniedProposal(@PathVariable UUID negotiationId, @AuthenticationPrincipal Users user){
+        negotiationsService.denied(negotiationId, user);
         return ResponseEntity.noContent().build();
     }
 }
