@@ -30,6 +30,11 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getAll());
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<ProjectWithClientDTO>> getMyProject(@AuthenticationPrincipal Users user){
+        return ResponseEntity.ok(projectService.findUserProject(user));
+    }
+
     @PostMapping
     public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody ProjectDTO dto, Authentication authentication){
         Users user = (Users) authentication.getPrincipal();

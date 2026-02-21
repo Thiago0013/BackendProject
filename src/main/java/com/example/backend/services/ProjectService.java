@@ -57,6 +57,25 @@ public class ProjectService {
                 .toList();
     }
 
+    public List<ProjectWithClientDTO> findUserProject(Users user){
+        if(providersRepo.existsByUser(user)){
+            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para clientes.");
+        }
+
+        return projectRepo.findAllByCliente(clientRepo.findByUser(user)).stream()
+                .map(p -> new ProjectWithClientDTO(
+                        p.getId(),
+                        p.getTitle(),
+                        p.getDescription(),
+                        p.getBudget(),
+                        p.getStatus(),
+                        p.getDeadline(),
+                        p.getCliente().getUser().getName(),
+                        p.getCliente().getUser().getEmail()
+                ))
+                .toList();
+    }
+
     public ProjectResponseDTO create(ProjectDTO dto, Users user){
         Cliente client = clientRepo.findByUser(user);
 
