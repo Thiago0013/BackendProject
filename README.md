@@ -399,6 +399,31 @@ Json
 
 Proposta (/negotiation)
 
+Pegar propostas do provider:
+
+    Rota: GET /negotiations/me
+
+    Acesso: Privado (Requer Token)
+
+    Acesso apenas para providers
+
+Resposta:
+
+    [
+        {
+            "id": "bc6d1821-3f21-4999-8b8a-247236e1843d",
+            "message": "faço o projeto com react e com total segurança de dados",
+            "proposedValue": 2000.00,
+            "status": "ACCEPTED",
+            "createdAt": "2026-02-21T13:49:10.336623",
+            "projectId": "50a57035-4db3-473a-b6d1-a33b3bf90d05",
+            "projectTitle": "Criar sistema de E-commerce",
+            "projectDescription": "Criar um site com vendas onlines com alta segurança",
+            "projectCreateAt": "2026-02-21T13:45:41.930633"
+        },
+        {...},
+    ]
+
 Enviar Proposta:
 
     Rota: POST /negotiations/{projectId}

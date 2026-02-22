@@ -1,6 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.dto.NegotiationsDTO;
+import com.example.backend.dto.NegotiationsResponseDTO;
 import com.example.backend.exceptions.BusinessException;
 import com.example.backend.exceptions.ResourceNotFoundException;
 import com.example.backend.exceptions.UnauthorizedAccessException;
@@ -14,8 +15,10 @@ import com.example.backend.repositories.NegotiationsRepository;
 import com.example.backend.repositories.ProjectRepository;
 import com.example.backend.repositories.ProvidersRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,11 +37,26 @@ public class NegotiationsService {
         this.providerRepo = providerRepo;
     }
 
+    public List<NegotiationsResponseDTO> getProviderNegotiations(Users user){
+        validadeIsProvider(user);
+
+        return negotiationsRepo.findAllByProviders(user.getProvider()).stream()
+                .map(n -> new NegotiationsResponseDTO(
+                        n.getId(),
+                        n.getMessage(),
+                        n.getProposedValue(),
+                        n.getStatus(),
+                        n.getCreatedAt(),
+                        n.getProjects().getId(),
+                        n.getProjects().getTitle(),
+                        n.getProjects().getDescription(),
+                        n.getProjects().getCreatedAt()
+                )).toList();
+    }
+
     @Transactional
     public void saveNegotiations(UUID projectId, NegotiationsDTO dto, Users user){
-        if(!providerRepo.existsByUser(user)){
-            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para prestadores de serviço (providers).");
-        }
+        validadeIsProvider(user);
 
         Providers provider = Optional.ofNullable(providerRepo.findByUser(user))
                 .orElseThrow(() -> new ResourceNotFoundException("Provider não encontrado para este usuário."));
@@ -103,6 +121,12 @@ public class NegotiationsService {
     public void validateIsClient(Users user){
         if(providerRepo.existsByUser(user)){
             throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para clientes.");
+        }
+    }
+
+    public void validadeIsProvider(Users user){
+        if(!providerRepo.existsByUser(user)){
+            throw new UnauthorizedAccessException("Acesso negado: esta área é exclusiva para providers (prestadores de serviço).");
         }
     }
 }

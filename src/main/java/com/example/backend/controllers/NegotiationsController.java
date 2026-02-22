@@ -1,6 +1,8 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.NegotiationsDTO;
+import com.example.backend.dto.NegotiationsResponseDTO;
+import com.example.backend.models.Negotiations;
 import com.example.backend.models.Users;
 import com.example.backend.services.NegotiationsService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,6 +20,11 @@ public class NegotiationsController {
 
     public NegotiationsController(NegotiationsService negotiationsService){
         this.negotiationsService = negotiationsService;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<NegotiationsResponseDTO>> myProposal(@AuthenticationPrincipal Users user){
+        return ResponseEntity.ok(negotiationsService.getProviderNegotiations(user));
     }
 
     @PostMapping("/{projectId}")

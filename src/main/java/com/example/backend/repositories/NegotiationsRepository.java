@@ -14,4 +14,6 @@ public interface NegotiationsRepository extends JpaRepository<Negotiations, UUID
     boolean existsByProjectsAndProviders(Projects projects, Providers provider);
 
     List<Negotiations> findAllByProjects(Projects project);
+
+    List<Negotiations> findAllByProviders(Providers providers);
 }
