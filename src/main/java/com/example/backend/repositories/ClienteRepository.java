@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
     Cliente findByUser(Users user);
-
-    boolean existsByUser(Users user);
 }
