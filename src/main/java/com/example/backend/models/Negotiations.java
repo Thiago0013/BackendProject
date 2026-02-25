@@ -28,7 +28,7 @@ public class Negotiations {
     @Column(nullable = false)
     private BigDecimal proposedValue;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
     @Enumerated(EnumType.STRING)
